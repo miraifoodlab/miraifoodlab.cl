@@ -23,29 +23,37 @@
       <div class="container px-3 mx-auto flex flex-wrap flex-col md:flex-row items-center">
         <!--Left -->
         <div class="flex flex-col w-full md:w-2/5 justify-center items-start text-center md:text-left">          
-          <img id="logo" class="w-full md:w-4/5 z-50" src="assets/mirai-framed.svg">
+          <img id="logo" class="w-1/2 mx-auto md:w-4/5 z-50" src="assets/mirai-framed.svg">
         </div>
         <!--Right -->
-        <div class="w-full md:w-3/5 py-6 text-center">
-          <!--p class="uppercase tracking-loose w-full">Experimentando con sabores</p-->
-          <h1 class="my-4 text-7xl font-bold leading-tight">mirai food lab</h1>
-          <p class="leading-normal text-2xl mb-8">Kombucha, pan artesanal, pastelería, koji, miso y varios productos fermentados.</p>
+        <div id="hero-text" class="w-full md:w-3/5 py-6 text-center">
+          <!--p class="uppercase tracking-loose w-full font-bold">
+            <span>Experimentando con sabores</span>
+          </p-->
+          <h1 class="my-4 text-6xl font-bold leading-tight">
+            <span>mirai food lab</span>
+          </h1>
+          <p class="leading-normal text-2xl mb-8">
+            <span>
+              Panes, kombuchas, misos, antojos y experimentación permanente con diversos 
+              productos fermentados.
+            </span>
+          </p>
         </div>
       </div>
     </div>
-    <div id="content" class="container my-12 mx-auto px-4 md:px-12 bg-gray-100">
+    <div id="content" class="container my-12 mx-auto px-4 md:px-12 bg-gray-200">
       <div class="flex items-start flex-wrap -mx-4">
         <div
           v-for="social in socialData"
           :key="social.name"
-          class="w-1/3 p-4 text-center">
-          <h3 class="font-bold text-3xl inline">
-            <a :href="social.url" target="_blank">
-              <img v-if="social.type === 'image'" :src="`assets/${social.name}-logo.svg`" class="social-logo pr-0 md:pr-3 inline" alt="">
-              <i v-if="social.type === 'icon'" :class="`social-logo pr-0 md:pr-3 inline fas ${social.name}`" alt=""></i>
+          class="w-1/3 p-2 text-center align-middle">
+          <h4 class="sm:text-lg md:text-xl lg:text-2xl xl:text-3xl social-links block">
+            <a :href="social.url" class="p-1" target="_blank">
+              <i :class="`social-logo pr-0 md:pr-3 inline ${social.name}`" alt=""></i>
               {{ social.text }}
             </a>
-          </h3>
+          </h4>
         </div>
       </div>
     </div>
@@ -53,8 +61,8 @@
       <div class="flex items-start flex-wrap -mx-4">
         <div
           v-for="(image, i) in instagramFeed" :key="`image-${i}`"
-          class="md:w-1/4 p-4 max-w-sm">
-          <div class="m-3 rounded overflow-hidden shadow-lg">
+          class="w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 instagram-img rounded-lg overflow-hidden mb-8 hover:opacity-100 opacity-50 shadow-2xl duration-500 transition-opacity">     
+          <div class="m-3 rounded overflow-hidden shadow-2xl transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
             <a :href="`https://www.instagram.com/miraifoodlab/p/${image.node.shortcode}`" target="_blank">
               <img alt="" class="" :src="image.node.display_url">
             </a>
@@ -62,8 +70,9 @@
         </div>
       </div>
     </div>
-    <div id="footer" class="container my-12 mx-auto px-4 md:px-12 bg-black">
-      <pre class="p-4 text-white">Mirai Food Lab - 2020</pre>
+
+    <div id="footer" class="container my-12 mx-auto px-4 md:px-12 bg-black text-white">
+      <p class="p-4">Mirai Food Lab - 2020</p>
     </div>
   </div>
   <script>
@@ -74,20 +83,17 @@
         randomBg: '',
         socialData: [
           {
-            type: 'image',
-            name: 'whatsapp',
+            name: 'fab fa-whatsapp',
             text: '+569 4214 2997',
             url: 'https://api.whatsapp.com/send?phone=56942142997'
           },
           {
-            type: 'image',
-            name: 'instagram',
+            name: 'fab fa-instagram',
             text: 'miraifoodlab',
             url: 'https://www.instagram.com/miraifoodlab'
           },
           {
-            type: 'icon',
-            name: 'fa-utensils',
+            name: 'far fa-heart',
             text: 'nuestro menú',
             url: 'https://slides.com/miraifoodlab/mirai-brochure/'
           }
@@ -95,16 +101,16 @@
       },
       methods: {
         getInstagramFeed() {
-          const externalThis = this;
-          const xmlhttp = new XMLHttpRequest();
-          xmlhttp.onreadystatechange = function() {
+          const _this = this;
+          const request = new XMLHttpRequest();
+          request.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-              const myObj = JSON.parse(this.responseText);
-              externalThis.instagramFeed = myObj.graphql.user.edge_owner_to_timeline_media.edges;
+              const response = JSON.parse(this.responseText);
+              _this.instagramFeed = response.graphql.user.edge_owner_to_timeline_media.edges;
             }
           };
-          xmlhttp.open("GET", "https://www.instagram.com/miraifoodlab?__a=1", true);
-          xmlhttp.send();
+          request.open("GET", "https://www.instagram.com/miraifoodlab?__a=1", true);
+          request.send();
         },
         getRandomBg() { this.randomBg = Math.ceil(Math.random() * 5) }
       },
